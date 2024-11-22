@@ -17,11 +17,6 @@ struct ContentView: View {
             Text("Hello, I'm SmartBulb")
                 .foregroundStyle(.tint)
                 .font(.system(size: 35, weight: .bold, design: .rounded))
-            Button("Sync"){
-                Task{
-                    await lamp.sync()
-                }
-            }
         }
         .padding()
     }

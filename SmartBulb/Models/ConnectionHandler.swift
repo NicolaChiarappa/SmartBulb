@@ -54,3 +54,10 @@ class ConnectionHandler{
     
     
 }
+
+
+enum Method: String{
+    case set="setPilot"
+    case get="getPilot"
+    case system="getSystemConfig"
+}

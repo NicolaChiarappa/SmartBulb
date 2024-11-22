@@ -1,8 +1,8 @@
 struct GetRequest{
     
-    let method="getPilot"
+    let method: Method = .get
     
     func toString()->String{
-        return "{\"method\":\"\(method)\", \"params\":{}}"
+        return "{\"method\":\"\(method.rawValue)\", \"params\":{}}"
     }
 }

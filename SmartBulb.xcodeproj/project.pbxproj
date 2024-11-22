@@ -10,9 +10,20 @@
 		A93406232CEFA97500CAACAC /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = A93406212CEFA96C00CAACAC /* README.md */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		A9E857782CF09F95009857DB /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = A93405FB2CEF92CE00CAACAC /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = A93406022CEF92CE00CAACAC;
+			remoteInfo = SmartBulb;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
 		A93406032CEF92CE00CAACAC /* SmartBulb.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SmartBulb.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A93406212CEFA96C00CAACAC /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		A9E857742CF09F95009857DB /* SmartBulbTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SmartBulbTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -21,10 +32,22 @@
 			path = SmartBulb;
 			sourceTree = "<group>";
 		};
+		A9E857752CF09F95009857DB /* SmartBulbTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = SmartBulbTests;
+			sourceTree = "<group>";
+		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		A93406002CEF92CE00CAACAC /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A9E857712CF09F95009857DB /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -38,6 +61,7 @@
 			isa = PBXGroup;
 			children = (
 				A93406052CEF92CE00CAACAC /* SmartBulb */,
+				A9E857752CF09F95009857DB /* SmartBulbTests */,
 				A93406042CEF92CE00CAACAC /* Products */,
 				A93406212CEFA96C00CAACAC /* README.md */,
 			);
@@ -47,6 +71,7 @@
 			isa = PBXGroup;
 			children = (
 				A93406032CEF92CE00CAACAC /* SmartBulb.app */,
+				A9E857742CF09F95009857DB /* SmartBulbTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -76,6 +101,29 @@
 			productReference = A93406032CEF92CE00CAACAC /* SmartBulb.app */;
 			productType = "com.apple.product-type.application";
 		};
+		A9E857732CF09F95009857DB /* SmartBulbTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A9E8577A2CF09F95009857DB /* Build configuration list for PBXNativeTarget "SmartBulbTests" */;
+			buildPhases = (
+				A9E857702CF09F95009857DB /* Sources */,
+				A9E857712CF09F95009857DB /* Frameworks */,
+				A9E857722CF09F95009857DB /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				A9E857792CF09F95009857DB /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				A9E857752CF09F95009857DB /* SmartBulbTests */,
+			);
+			name = SmartBulbTests;
+			packageProductDependencies = (
+			);
+			productName = SmartBulbTests;
+			productReference = A9E857742CF09F95009857DB /* SmartBulbTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -88,6 +136,10 @@
 				TargetAttributes = {
 					A93406022CEF92CE00CAACAC = {
 						CreatedOnToolsVersion = 16.1;
+					};
+					A9E857732CF09F95009857DB = {
+						CreatedOnToolsVersion = 16.1;
+						TestTargetID = A93406022CEF92CE00CAACAC;
 					};
 				};
 			};
@@ -106,6 +158,7 @@
 			projectRoot = "";
 			targets = (
 				A93406022CEF92CE00CAACAC /* SmartBulb */,
+				A9E857732CF09F95009857DB /* SmartBulbTests */,
 			);
 		};
 /* End PBXProject section */
@@ -119,6 +172,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		A9E857722CF09F95009857DB /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -129,7 +189,22 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		A9E857702CF09F95009857DB /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		A9E857792CF09F95009857DB /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = A93406022CEF92CE00CAACAC /* SmartBulb */;
+			targetProxy = A9E857782CF09F95009857DB /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		A93406102CEF92CF00CAACAC /* Debug */ = {
@@ -324,6 +399,52 @@
 			};
 			name = Release;
 		};
+		A9E8577B2CF09F95009857DB /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 5383233W33;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.1;
+				MACOSX_DEPLOYMENT_TARGET = 15.1;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.nickch.SmartBulbTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = auto;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx xros xrsimulator";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2,7";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SmartBulb.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/SmartBulb";
+				XROS_DEPLOYMENT_TARGET = 2.1;
+			};
+			name = Debug;
+		};
+		A9E8577C2CF09F95009857DB /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 5383233W33;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.1;
+				MACOSX_DEPLOYMENT_TARGET = 15.1;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.nickch.SmartBulbTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = auto;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx xros xrsimulator";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2,7";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SmartBulb.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/SmartBulb";
+				XROS_DEPLOYMENT_TARGET = 2.1;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -341,6 +462,15 @@
 			buildConfigurations = (
 				A93406132CEF92CF00CAACAC /* Debug */,
 				A93406142CEF92CF00CAACAC /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		A9E8577A2CF09F95009857DB /* Build configuration list for PBXNativeTarget "SmartBulbTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A9E8577B2CF09F95009857DB /* Debug */,
+				A9E8577C2CF09F95009857DB /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
