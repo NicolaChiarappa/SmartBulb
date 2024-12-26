@@ -2,14 +2,19 @@ import Foundation
 import Network
 
 
-class ConnectionHandler{
+class ConnectionHandler {
     let host:NWEndpoint.Host
     let port:NWEndpoint.Port
+    //var queue:DispatchQueue
     var connection:NWConnection?=nil
+    
     
     init(host:String, port:UInt16){
         self.host = NWEndpoint.Host(host)
         self.port = NWEndpoint.Port(rawValue: port) ?? 0
+        //self.queue = DispatchQueue(label: "com.smartbulb.netqueue")
+        
+        
     }
     
     
@@ -32,8 +37,11 @@ class ConnectionHandler{
                             continuation.resume(throwing: error)
                         }else if let data = data{
                             continuation.resume(returning: data)
+                            
                         }
+                        
                     })
+                    
                 }
                 
             })
@@ -41,12 +49,17 @@ class ConnectionHandler{
         }
     }
     
-    func start(){
-        print("Connessione started")
-        connection = NWConnection(host: self.host, port: self.port, using: .udp)
-        connection?.start(queue: .global())
-        
+    func start() {
+        if connection == nil || connection?.state == .cancelled {
+            self.connection = NWConnection(host: self.host, port: self.port, using: .udp)
+            print("Avviando connessione a \(host):\(port)")
+            self.connection?.start(queue: .main)
+        } else {
+            print("Connessione già attiva o in stato non valido")
+        }
     }
+
+
     
     func stop(){
         connection?.cancel()
