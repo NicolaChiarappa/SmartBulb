@@ -1,13 +1,14 @@
 import SwiftUI
 
 struct ContentView: View {
-    @State var lamp = LampViewModel(lamp: LampModel(name: "Desk lamp", host: "192.168.1.3", port: 38899))
     let modes = ["Colors", "Scenes"]
+    
+    @State var lamp = LampViewModel(lamp: LampModel(name: "Desk Lamp", host: "192.168.1.3", port: 38899))
     @State var selectedMode = "Colors"
     @State var colore:Color = .black
     var body: some View {
         NavigationStack {
-            VStack (alignment: .trailing) {
+            VStack () {
                 
                 
                 Picker(selection: $selectedMode, label: Text("Mode")){
@@ -23,11 +24,9 @@ struct ContentView: View {
                 .font(.largeTitle)
                 .pickerStyle(.segmented)
                 
+               
                 
-                
-                
-                
-                Slider(lamp: $lamp)
+                CustomSlider(lamp: $lamp)
                 
                 
             }
@@ -40,13 +39,12 @@ struct ContentView: View {
 
 
 
-
-struct Slider : View{
-    let maxHeight: CGFloat = 490
+struct CustomSlider : View{
+    let maxHeight: CGFloat = UIScreen.main.bounds.height*0.6
     let rectangleWidth: CGFloat = 110
     
     @State var width:CGFloat = 7
-    @State var rectangleHeight: CGFloat = 280
+    @State var rectangleHeight: CGFloat = 0
     @State var fillPercentage = 0.0
     @State var overflow = false
     @State private var initialDragHeight: CGFloat = 0
@@ -54,134 +52,134 @@ struct Slider : View{
     
     var body : some View {
         
-        VStack (alignment: .trailing){
-            
-            
-            
-            
-            
-            
-            
-            ZStack {
-                HStack {
-                    Rectangle()
-                        .fill(Color.init(uiColor: .systemGray))
-                        .frame(width: rectangleWidth, height: 500)
-                        .padding()
-                }
-                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomTrailing)
-                HStack {
-                    Rectangle()
-                        .fill(Color.init(uiColor: .white))
-                        .frame(width:rectangleWidth, height: rectangleHeight)
-                        .padding()
-                    
-                }
-                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomTrailing)
-                
-                HStack {
-                    Text(String(min(Int(rectangleHeight/4.9),100).formatted(.percent)))
-                        .font(.title3)
-                        .bold()
-                        .foregroundColor(.black)
-                        .frame(maxWidth: rectangleWidth, alignment: .center)
-                        
-                        
-                }
-                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .trailing)
-               
-                    
+        
+        
+        ZStack() {
+            HStack {
+                Rectangle()
+                    .fill(Color.init(uiColor: .systemGray))
+                    .frame(width: rectangleWidth, height: maxHeight)
+                    .padding()
             }
-            
-            
-            
-            .frame(maxWidth: rectangleWidth, maxHeight: .infinity, alignment: .bottomTrailing)
-            
-            .mask {
-                HStack {
-                    RoundedRectangle(cornerRadius: 15)
-                        .frame(width:width, height: overflow ? 500 : 490)
-                        .padding()
-                        .animation(.linear(duration: 0.2), value: overflow)
-                        .animation(.linear(duration: 0.2), value: width)
-                    
-                    
-                }
-                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomTrailing)
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomTrailing)
+            HStack {
+                Rectangle()
+                    .fill(Color.init(uiColor: .white))
+                    .frame(width:rectangleWidth, height: rectangleHeight)
+                    .padding()
+                    .animation(.linear(duration: 0.2), value: overflow)
+                    .animation(.easeOut(duration: 0.4), value: rectangleHeight)
+                
                 
             }
-            .shadow(radius: 5)
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomTrailing)
             
             
-            
-            
-            
-            .gesture(
-                DragGesture()
-                    .onChanged { value in
-                        
-                        width=75
-                        
-                        if (rectangleHeight == maxHeight){
-                            rectangleHeight=rectangleHeight-10
-                        }
-                        
-                        
-                        
-                        
-                        // Se il drag è iniziato, memorizza l'altezza iniziale
-                        if initialDragHeight == 0 {
-                            initialDragHeight = rectangleHeight
-                        }
-                        
-                        
-                        
-                        
-                        
-                        // Calcola la variazione dell'altezza in base al movimento del drag
-                        let newHeight = initialDragHeight - value.translation.height
-                        
-                        // Limita l'altezza tra 0 e il massimo
-                        rectangleHeight = min(max(0,newHeight), maxHeight+10)
-                        
-                        if(rectangleHeight<10){
-                            print("spengo")
-                            lamp.power(isOn: false)
-                        
-                        }else{
-                            Task{
-                                if(lamp.getState()==false){
-                                    lamp.power(isOn: true)
-                                }
-                                
-                                try await Task.sleep(nanoseconds: 1000)
-                                lamp.setBrightness(dimming: Int(rectangleHeight/4.9) )
-
-                            }
-                        }
-                        
-                        
-                        overflow = newHeight > maxHeight
-                    }
-                    .onEnded({ value in
-                        
-                        initialDragHeight = 0
-                        overflow=false
-                        width=7
-                    })
-            )
-            //.background(.green)
+            HStack {
+                Text(String(min(Int((rectangleHeight/maxHeight)*100),100)))
+                    .font(.title3)
+                    .bold()
+                    .foregroundColor(.black)
+                    .frame(width: width, height: maxHeight,  alignment: .center)
+                    .opacity(width == 75 ? 1 : 0)
+                
+                
+                
+                
+                
+            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomTrailing)
+            .padding()
             
             
             
         }
-        .frame(maxWidth: .infinity, maxHeight: 600, alignment: .bottomTrailing)
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+        .background(.green)
+        .mask {
+            HStack {
+                RoundedRectangle(cornerRadius: 15)
+                    .frame(width:width, height: overflow ? maxHeight+10 : maxHeight)
+                    .padding()
+                    .animation(.linear(duration: 0.2), value: overflow)
+                    .animation(.linear(duration: 0.2), value: width)
+                
+                
+            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomTrailing)
+            
+            
+        }
+        .gesture(
+            DragGesture()
+                .onChanged { value in
+                    
+                    width=75
+                    
+                    if (rectangleHeight == maxHeight){
+                        rectangleHeight=rectangleHeight-10
+                    }
+                    
+                    
+                    
+                    
+                    // Se il drag è iniziato, memorizza l'altezza iniziale
+                    if initialDragHeight == 0 {
+                        initialDragHeight = rectangleHeight
+                    }
+                    
+                    
+                    
+                    
+                    
+                    // Calcola la variazione dell'altezza in base al movimento del drag
+                    let newHeight = initialDragHeight - value.translation.height
+                    
+                    // Limita l'altezza tra 0 e il massimo
+                    rectangleHeight = min(max(0,newHeight), maxHeight)
+                    lamp.setBrightness(dimming: Int((rectangleHeight/maxHeight)*100))
+                    overflow = newHeight > maxHeight+10
+                }
+                .onEnded({ value in
+                    //                    lamp.setBrightness(dimming: Int((rectangleHeight/maxHeight)*100))
+                    DispatchQueue.global().async{
+                        Task{
+                            
+                            let timer = 0.5
+                            try? await Task.sleep(nanoseconds: UInt64(timer * 1_000_000_000))
+                            await lamp.sync()
+                        }
+                        
+                        
+                    }
+                    
+                    initialDragHeight = 0
+                    overflow=false
+                    width=7
+                    
+                    
+                })
+        )
+        .shadow(radius: 5)
+        .onAppear{
+            DispatchQueue.global().async {
+                Task{
+                    await self.lamp.sync()
+                    DispatchQueue.main.async{
+                        rectangleHeight=(UIScreen.main.bounds.height*0.6)*Double(self.lamp.brightness)/100
+                        
+                    }
+                }
+                
+            }
+            
+        }
+        
         
         
         
         
     }
-    
 }
 
 

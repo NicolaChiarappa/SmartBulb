@@ -21,23 +21,22 @@ import Foundation
     
     func sync() async {
         let request=GetRequest()
-        print(request.toString())
         do{
+            print("avvio sync")
             let response = try await connection.sendUDPCommand(message: request.toString() )
             print(String(data: response, encoding: .utf8) ?? "errore di decoding")
             if let json = try JSONSerialization.jsonObject(with: response) as? [String:Any]{
                 if let result = json["result"] as? [String:Any]{
                     self.isOn = result["state"] as? Bool ?? false
                     self.brightness = result["dimming"] as? Int ?? 0
+                    
                 }
                 
             }
             
-            
-            
-            
         }catch{
-            print("errore")
+            
+            print("errore sync \(error)")
         }
         
     }
@@ -66,8 +65,18 @@ import Foundation
     func setDimming(_ value:Int) async throws{
         let request = SetRequest(dimming: value)
         
-        let _ = try await connection.sendUDPCommand(message: request.toString())
-        await sync()
+        do{
+            _ =  try await connection.sendUDPCommand(message: request.toString())
+            
+        }
+        catch{
+            
+            print("dimming error \(error)")
+            
+        }
+        
+        
+        
     }
     
     

@@ -34,16 +34,10 @@ import Foundation
     
     
     
-    func sync(){
-        DispatchQueue.main.async{
-            Task{
-                await self.lampModel.sync()
-            }
-        }
-    }
     
-    func getState()-> Bool{
-        return lampModel.isOn
+    
+    func getState()-> Int{
+        return lampModel.brightness
     }
     
     func getName()->String{
@@ -51,8 +45,15 @@ import Foundation
     }
     
     
+    
+    
+    func sync() async {
+            await self.lampModel.sync()
+    }
+    
+    
     func power (isOn:Bool){
-        DispatchQueue.main.async{
+        DispatchQueue.global().async{
             Task{
                 try await self.lampModel.setPower(state: isOn)
                 self.lampModel.isOn.toggle()
@@ -61,8 +62,18 @@ import Foundation
     }
     
     func setBrightness(dimming:Int){
-        DispatchQueue.main.async{
+        DispatchQueue.global().async{
+            
             Task{
+                if(dimming<1){
+                    try await self.lampModel.setDimming(0)
+                    self.power(isOn: false)
+                    return
+                }
+                
+                if(!self.isOn) {
+                    self.power(isOn: true)
+                }
                 try await self.lampModel.setDimming(dimming)
             }
         }

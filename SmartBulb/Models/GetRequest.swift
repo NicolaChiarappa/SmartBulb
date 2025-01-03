@@ -1,3 +1,8 @@
+///
+///
+/// - Tag: 
+///
+
 struct GetRequest{
     
     let method: Method = .get
