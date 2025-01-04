@@ -8,31 +8,18 @@ struct ContentView: View {
     @State var colore:Color = .black
     var body: some View {
         NavigationStack {
-            VStack () {
-                
-                
-                Picker(selection: $selectedMode, label: Text("Mode")){
-                    
-                    
-                    ForEach(modes, id: \.self){ mode in
-                        Text(mode)
-                        
-                        
-                    }
-                    
+            
+            ZStack {
+                MainSection()
+                HStack{
+                    CustomSlider(lamp: $lamp)
                 }
-                .font(.largeTitle)
-                .pickerStyle(.segmented)
+                .frame(maxWidth: .infinity, alignment: .trailing)
                 
-               
-                
-                CustomSlider(lamp: $lamp)
-                
+                    .padding()
                 
             }
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
             .navigationTitle(lamp.getName())
-            .padding()
         }
     }
 }
@@ -42,7 +29,6 @@ struct ContentView: View {
 struct CustomSlider : View{
     let maxHeight: CGFloat = UIScreen.main.bounds.height*0.6
     let rectangleWidth: CGFloat = 110
-    
     @State var width:CGFloat = 7
     @State var rectangleHeight: CGFloat = 0
     @State var fillPercentage = 0.0
@@ -88,13 +74,13 @@ struct CustomSlider : View{
                 
                 
             }
-            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomTrailing)
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
             .padding()
             
             
             
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+        .frame(maxWidth: width, maxHeight: .infinity, alignment: .top)
         .background(.green)
         .mask {
             HStack {
@@ -186,4 +172,23 @@ struct CustomSlider : View{
 
 #Preview {
     ContentView()
+}
+
+struct MainSection: View {
+    var body: some View {
+        TabView(){
+            Tab("Colors", systemImage: "paintpalette.fill"){
+                VStack{}
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    
+            }
+            
+            Tab("Scenes", systemImage: "lamp.desk.fill"){
+                VStack{}
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    
+            }
+        }
+        
+    }
 }

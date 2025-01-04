@@ -8,8 +8,7 @@ class ConnectionHandler: @unchecked Sendable{
     private var response:Data?
     private var timer=Timer()
     private var countRequests:Int
-    private let timeInterval = 0.1
-    private let maxRequest = 1
+    private var completed:Bool=true
     
     
     
@@ -17,47 +16,17 @@ class ConnectionHandler: @unchecked Sendable{
         self.host = NWEndpoint.Host(host)
         self.port = NWEndpoint.Port(rawValue: port) ?? 0
         self.countRequests = 0
-        self.startTimer()
     }
-    
-    
-    //starts timer based on timeInterval
-    private func startTimer() {
-        self.timer = Timer.scheduledTimer(withTimeInterval: self.timeInterval, repeats: true) {
-            [weak self] timer in
-            guard let self = self else {
-                timer.invalidate()
-                return
-            }
-            
-            self.countRequests=0
-        }
-    }
-    
-    
-    
-    
-    //manage throttling
-    private func throttle() -> Bool {
-        
-        if countRequests < maxRequest {
-            countRequests += 1
-            return true
-        }
-        return false
-    }
-    
-    
-    
     
     
     func sendUDPCommand(message:String) async throws  -> Data{
         
-        guard self.throttle() else {
+        guard self.completed else {
             throw NSError(domain: "ConnectionError", code: -1, userInfo: [NSLocalizedDescriptionKey:"Too many requests"])
         }
         
-        start()
+        self.start()
+        self.completed=false
         
         guard self.connection != nil else{
             throw NSError(domain: "ConnectionError", code: -1, userInfo: [NSLocalizedDescriptionKey:"There is no connection"])
@@ -68,7 +37,9 @@ class ConnectionHandler: @unchecked Sendable{
         return try await withCheckedThrowingContinuation {
             continuation in
             
-            
+            defer{
+                self.completed=true
+            }
             
             self.connection?.send(content: message.data(using: .utf8), completion: .contentProcessed{
                 error in
@@ -87,6 +58,9 @@ class ConnectionHandler: @unchecked Sendable{
                         return
                     }else if let data = data{
                         continuation.resume(returning: data)
+                        return
+                    }else {
+                        continuation.resume(throwing: NSError(domain: "ConnectionError", code: -1, userInfo: [NSLocalizedDescriptionKey: "No data received"]))
                         return
                     }
                     

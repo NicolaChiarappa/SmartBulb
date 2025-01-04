@@ -63,10 +63,24 @@ import Foundation
     }
     
     func setDimming(_ value:Int) async throws{
-        let request = SetRequest(dimming: value)
+        let request:SetRequest
+        
+        if (!self.isOn){
+            request = SetRequest(state: true, dimming: value)
+        }else{
+            request = SetRequest(dimming: value)
+        }
         
         do{
-            _ =  try await connection.sendUDPCommand(message: request.toString())
+            
+            
+            if(value<1){
+                try await self.setPower(state: false)
+            }else{
+               
+                _ =  try await connection.sendUDPCommand(message: request.toString())
+            }
+            
             
         }
         catch{

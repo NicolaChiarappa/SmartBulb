@@ -15,6 +15,12 @@ struct SetRequest{
         params=Params(state: nil, dimming: dimming, sceneId: nil, r: nil, g: nil, b: nil, temp: nil)
     }
     
+    //setDimming and setPower
+    init(state:Bool, dimming:Int){
+        params=Params(state: state, dimming: dimming, sceneId: nil, r: nil, g: nil, b: nil, temp: nil)
+    }
+    
+    
     //set sceneId
     init(state:Bool=false, dimming:Int=0,sceneId:Int ){
         params=Params(state:state, dimming:dimming, sceneId: sceneId, r: nil, g: nil, b: nil, temp: nil)

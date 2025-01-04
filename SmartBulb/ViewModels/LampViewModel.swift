@@ -48,7 +48,7 @@ import Foundation
     
     
     func sync() async {
-            await self.lampModel.sync()
+        await self.lampModel.sync()
     }
     
     
@@ -61,19 +61,11 @@ import Foundation
         }
     }
     
+    
+    
     func setBrightness(dimming:Int){
         DispatchQueue.global().async{
-            
             Task{
-                if(dimming<1){
-                    try await self.lampModel.setDimming(0)
-                    self.power(isOn: false)
-                    return
-                }
-                
-                if(!self.isOn) {
-                    self.power(isOn: true)
-                }
                 try await self.lampModel.setDimming(dimming)
             }
         }
