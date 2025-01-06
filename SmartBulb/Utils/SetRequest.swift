@@ -32,7 +32,7 @@ struct SetRequest{
     }
     
     //set rgb
-    init(state:Bool=false, dimming:Int=0, r:Int, g:Int, b:Int ){
+    init(state:Bool?=nil, dimming:Int?=nil, r:Int, g:Int, b:Int ){
         params=Params(state:state, dimming:dimming, sceneId: nil, r: r, g: g, b: b, temp: nil)
     }
     

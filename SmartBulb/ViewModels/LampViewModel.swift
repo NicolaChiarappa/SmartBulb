@@ -72,6 +72,14 @@ import Foundation
         
     }
     
+    func setColor(r:Int, g:Int, b:Int){
+        DispatchQueue.global().async{
+            Task{
+                try await self.lampModel.setColor(r: r, g: g, b: b)
+            }
+        }
+    }
+    
     
     
 }
