@@ -7,15 +7,15 @@ import Foundation
         get {
             lampModel.isOn
         }
+        
         set {
-            
             power(isOn: newValue)
-            
         }
     }
     
     
-    var brightness: Int{
+   var brightness: Int
+    {
         get {
             lampModel.brightness
         }
@@ -27,7 +27,6 @@ import Foundation
     
     init(lamp: LampModel) {
         self.lampModel = lamp
-        
     }
     
     
@@ -43,8 +42,6 @@ import Foundation
     func getName()->String{
         return lampModel.name
     }
-    
-    
     
     
     func sync() async {
