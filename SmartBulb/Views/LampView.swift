@@ -1,31 +1,36 @@
 import SwiftUI
 
-struct BulbView: View {
+struct LampView: View {
+    var modes = ["Colors", "Scenes"]
     @State var lamp: LampViewModel
     @State var selectedMode = "Colors"
     @State var colore:Color = .black
     @State var dimming:Bool = false
+    @State var isNewColor:Bool = false
+    @State var newColor:CGColor=CGColor(red: 0, green: 0, blue: 0, alpha: 0)
     var body: some View {
-            ZStack {
+        ZStack {
+            NavigationStack{
+                
+                
                 MainView(lamp: $lamp, dimming: $dimming)
                     .animation(.linear(duration: 0.3), value: dimming)
-                HStack{
-                    CustomSlider(lamp: $lamp, dimming: $dimming)
-                        
-                        
-                }
-                .frame(maxWidth: .infinity, alignment: .trailing)
-                .padding()
+                    .navigationTitle(lamp.getName())
             }
-            .onAppear{
-                DispatchQueue.global().async {
-                    Task{
-                        await self.lamp.sync()
-                    }
+            
+            
+            HStack(alignment: .bottom){
+                CustomSlider(lamp: $lamp, dimming: $dimming)
+                    .frame(height: UIScreen.main.bounds.height*0.5)
                     
-                }
-                
+                    
             }
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomTrailing)
+            
+            .padding()
+            
+        }
+        
     }
 }
 
@@ -52,10 +57,12 @@ struct CustomSlider : View{
             }
             .frame(maxWidth: .infinity, maxHeight: maxHeight, alignment: .trailing)
             
+            
             VStack {
                 Spacer()
                 Rectangle()
                     .fill(Color.init(uiColor: .white))
+                    .opacity(0.70)
                     .frame(width:rectangleWidth, height: rectangleHeight)
                     .padding(.horizontal)
                     .animation(.easeOut(duration: 0.4), value: rectangleHeight)
@@ -69,9 +76,9 @@ struct CustomSlider : View{
                 Text(String(min(Int((rectangleHeight/maxHeight)*100),100)))
                     .font(.title3)
                     .bold()
-                    .foregroundColor(.black)
                     .frame(width: width, height: maxHeight,  alignment: .center)
                     .opacity(width == 75 ? 1 : 0)
+                    .shadow(radius: 2)
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .trailing)
             .padding()
@@ -80,7 +87,11 @@ struct CustomSlider : View{
             
             
         }
-        .frame(maxWidth: width, maxHeight: .infinity, alignment: .top)
+        
+        .frame(maxWidth: width, maxHeight: .infinity)
+        
+        
+        
         .mask {
             HStack {
                 RoundedRectangle(cornerRadius: 15)
@@ -167,129 +178,79 @@ struct CustomSlider : View{
 }
 
 struct MainView: View {
-    @Binding var lamp:LampViewModel
-    @Binding var dimming:Bool
-    var body: some View {
-        TabView(){
-            
-            
-            Tab("Colors", systemImage: "paintpalette.fill"){
-                ColorsView(dimming:$dimming, lamp: $lamp)
-                    
-            }
-            
-            Tab("Scenes", systemImage: "lamp.desk.fill"){
-                ScenesView(dimming: $dimming)
-                    
-            }
-            
-        }
-        .tabViewStyle(.automatic)
-        
-        
-        
-    }
-}
-
-struct ScenesView: View {
     let columns = [
         GridItem(),
         GridItem(),
         GridItem(),
     ]
-    @Binding var dimming:Bool
-    var body: some View {
-        NavigationStack{
-            ScrollView{
-                
-                LazyVGrid(columns: columns){
-                    ForEach(0..<26){
-                        _ in
-                        Text("Sce")
-                            .font(.title)
-                            .frame(maxWidth: .infinity)
-                            .padding()
-                    }
-                }
-                .padding(.trailing)
-                .padding(.trailing)
-                .padding(.trailing)
-                
-                
-                
-            }
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .blur(radius: dimming ? 2:0)
-            .navigationTitle("Scenes")
-        }
-    }
-}
-
-
-struct ColorsView: View {
-    @Binding var dimming:Bool
+    
     @Binding var lamp:LampViewModel
+    @Binding var dimming:Bool
+    @State var color:CGColor=CGColor(red: 0, green: 0, blue: 0, alpha: 0)
+    
     @State var colors: [CGColor] = [
         CGColor(red: 255/255, green: 0/255, blue: 0/255, alpha: 1),      // Rosso
         CGColor(red: 0/255, green: 255/255, blue: 0/255, alpha: 1),      // Verde
         CGColor(red: 0/255, green: 0/255, blue: 255/255, alpha: 1),      // Blu
         CGColor(red: 255/255, green: 255/255, blue: 0/255, alpha: 1),    // Giallo
-        CGColor(red: 255/255, green: 0/255, blue: 255/255, alpha: 1),    // Magenta
-        CGColor(red: 0/255, green: 255/255, blue: 255/255, alpha: 1),    // Ciano
-        CGColor(red: 128/255, green: 128/255, blue: 128/255, alpha: 1),  // Grigio
-        CGColor(red: 255/255, green: 165/255, blue: 0/255, alpha: 1),    // Arancione
-        CGColor(red: 75/255, green: 0/255, blue: 130/255, alpha: 1),     // Indigo
-        CGColor(red: 255/255, green: 192/255, blue: 203/255, alpha: 1),  // Rosa
-        CGColor(red: 139/255, green: 69/255, blue: 19/255, alpha: 1),    // Marrone
-        CGColor(red: 128/255, green: 0/255, blue: 0/255, alpha: 1),      // Rosso scuro
-        CGColor(red: 0/255, green: 128/255, blue: 0/255, alpha: 1),      // Verde scuro
-        CGColor(red: 0/255, green: 0/255, blue: 128/255, alpha: 1),      // Blu scuro
-        CGColor(red: 255/255, green: 222/255, blue: 173/255, alpha: 1),  // Beige
-        CGColor(red: 70/255, green: 130/255, blue: 180/255, alpha: 1),   // Acciaio
-        CGColor(red: 240/255, green: 230/255, blue: 140/255, alpha: 1),  // Giallo chiaro
-        CGColor(red: 220/255, green: 20/255, blue: 60/255, alpha: 1),    // Cremisi
-        CGColor(red: 128/255, green: 0/255, blue: 128/255, alpha: 1),    // Viola
-        CGColor(red: 255/255, green: 140/255, blue: 0/255, alpha: 1),    // Arancione scuro
-        CGColor(red: 154/255, green: 205/255, blue: 50/255, alpha: 1),   // Verde oliva
-        CGColor(red: 106/255, green: 90/255, blue: 205/255, alpha: 1),   // Viola medio
-        CGColor(red: 173/255, green: 216/255, blue: 230/255, alpha: 1),  // Azzurro
-        CGColor(red: 244/255, green: 164/255, blue: 96/255, alpha: 1),   // Sabbia
-        CGColor(red: 255/255, green: 228/255, blue: 181/255, alpha: 1)   // Melone chiaro
-    ]
 
-    let columns = [
-        GridItem(),
-        GridItem(),
-        GridItem(),
     ]
+    
     var body: some View {
-        NavigationStack{
-            ScrollView{
-                LazyVGrid(columns: columns, spacing: 0){
-                    ForEach(colors, id: \.self){
-                        color in
-                        ColorCircle(lamp: $lamp, color: color)
-                            .padding()
+        ScrollView{
+            VStack{
+                VStack(alignment: .leading, spacing: 0) {
+                    Text("Colors")
+                        .font(.title3)
+                        .bold()
+                        .foregroundStyle(.secondary)
+                    ScrollView(.horizontal) {
+                        HStack{
+                            ColorPicker(selection: $color, supportsOpacity: false, label: {})
+                                .scaleEffect(1.6)
+                                .padding(.trailing)
+                                
+                            
+                            
+                            ForEach(colors, id: \.self){
+                                color in
+                                ColorCircle(lamp: $lamp, color: color)
+                                    .padding(.vertical)
+                            }
+                        }
                     }
+                    .scrollIndicators(.hidden)
+                    
                 }
-                .padding(.trailing)
-                .padding(.trailing)
-                .padding(.trailing)
+                .padding()
+                
+                
+                LazyVGrid(columns: columns)
+                {
+                    
+                }
             }
-            .navigationTitle("Colors")
+            
         }
+        
     }
+    
+    
+    
 }
+
+
+
 
 struct ColorCircle: View{
     @Binding var lamp:LampViewModel
     let color:CGColor
-    let ray = CGFloat(70)
+    let ray = CGFloat(45)
     
     var body: some View{
         VStack{
             
-            RoundedRectangle(cornerRadius: 15)
+            Circle()
                 .frame(width: ray, height: ray)
                 .foregroundColor(Color(color))
         }
@@ -299,3 +260,8 @@ struct ColorCircle: View{
     }
 }
 
+
+
+#Preview{
+    BulbView(lamp:LampViewModel(lamp: LampModel(name: "Desk Lamp", host: "192.168.1.2")))
+}
