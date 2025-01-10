@@ -6,9 +6,10 @@ class ConnectionHandler: @unchecked Sendable{
     let port:NWEndpoint.Port
     var connection:NWConnection?=nil
     private var response:Data?
-    private var timer=Timer()
     private var countRequests:Int
     private var completed:Bool=true
+    private var lastRequest:String?=nil
+    private var timer=Timer()
     
     
     
@@ -16,10 +17,22 @@ class ConnectionHandler: @unchecked Sendable{
         self.host = NWEndpoint.Host(host)
         self.port = NWEndpoint.Port(rawValue: port) ?? 0
         self.countRequests = 0
+        self.timer=Timer(timeInterval: 1, repeats: true) { _ in
+            
+            if(self.lastRequest != nil){
+                DispatchQueue.global().async {
+                    
+                    Task{
+                        
+                        _ = try await self.sendSingleUDPCommand(message: self.lastRequest ?? "")
+                    }
+                }
+            }
+        }
     }
     
     
-    func sendUDPCommand(message:String) async throws  -> Data{
+    private func sendSingleUDPCommand(message:String) async throws  -> Data{
         
         guard self.completed else {
             throw NSError(domain: "ConnectionError", code: -1, userInfo: [NSLocalizedDescriptionKey:"Too many requests"])
@@ -32,7 +45,7 @@ class ConnectionHandler: @unchecked Sendable{
             throw NSError(domain: "ConnectionError", code: -1, userInfo: [NSLocalizedDescriptionKey:"There is no connection"])
         }
         
-       
+        print("riprovo")
         
         return try await withCheckedThrowingContinuation {
             continuation in
@@ -91,7 +104,31 @@ class ConnectionHandler: @unchecked Sendable{
     }
     
     
+    
+    //this logic ensures that last valid message will be sent
+    func sendUDPCommand(message:String) async throws -> Data {
+        var response:Data
+        self.timer.invalidate()
+        self.timer.fire()
+        do{
+            response = try await sendSingleUDPCommand(message: message)
+            self.lastRequest=nil
+        }
+        catch{
+            response=Data()
+            lastRequest=message
+        }
+        
+        return response
+    }
+    
+    
 }
+
+
+
+
+
 
 
 enum Method: String{

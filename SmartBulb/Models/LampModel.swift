@@ -1,7 +1,7 @@
 import Foundation
 
 
-@Observable class LampModel{
+@Observable class LampModel: @unchecked Sendable{
     var name=String()
     var isOn:Bool=false
     var brightness:Int=0
@@ -9,9 +9,9 @@ import Foundation
     let host:String
     let port:UInt16
     var connection:ConnectionHandler
+    var synced: Bool = false
     
-    
-    init(name:String, host:String, port:UInt16){
+    init(name:String, host:String, port:UInt16 = 38899){
         self.name=name
         self.host=host
         self.port=port
@@ -22,13 +22,15 @@ import Foundation
     func sync() async {
         let request=GetRequest()
         do{
-            print("avvio sync")
             let response = try await connection.sendUDPCommand(message: request.toString() )
-            print(String(data: response, encoding: .utf8) ?? "errore di decoding")
             if let json = try JSONSerialization.jsonObject(with: response) as? [String:Any]{
                 if let result = json["result"] as? [String:Any]{
-                    self.isOn = result["state"] as? Bool ?? false
-                    self.brightness = result["dimming"] as? Int ?? 0
+                    
+                    DispatchQueue.main.async{
+                        self.synced=true
+                        self.isOn = result["state"] as? Bool ?? false
+                        self.brightness = result["dimming"] as? Int ?? 0
+                    }
                     
                 }
                 
@@ -36,7 +38,6 @@ import Foundation
             
         }catch{
             
-            print("errore sync \(error)")
         }
         
     }
@@ -91,6 +92,11 @@ import Foundation
         
         
         
+    }
+    
+    func setScene(_ value:Int) async throws{
+        let request = SetRequest(state: true, sceneId: value)
+        _ = try await connection.sendUDPCommand(message: request.toString())
     }
     
     

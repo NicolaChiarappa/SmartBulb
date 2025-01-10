@@ -179,22 +179,16 @@ struct CustomSlider : View{
 
 struct MainView: View {
     let columns = [
-        GridItem(),
-        GridItem(),
-        GridItem(),
+        GridItem( alignment: .leading),
+        GridItem( alignment: .leading),
+        GridItem( alignment: .leading),
+        
     ]
+    
     
     @Binding var lamp:LampViewModel
     @Binding var dimming:Bool
     @State var color:CGColor=CGColor(red: 0, green: 0, blue: 0, alpha: 0)
-    
-    @State var colors: [CGColor] = [
-        CGColor(red: 255/255, green: 0/255, blue: 0/255, alpha: 1),      // Rosso
-        CGColor(red: 0/255, green: 255/255, blue: 0/255, alpha: 1),      // Verde
-        CGColor(red: 0/255, green: 0/255, blue: 255/255, alpha: 1),      // Blu
-        CGColor(red: 255/255, green: 255/255, blue: 0/255, alpha: 1),    // Giallo
-
-    ]
     
     var body: some View {
         ScrollView{
@@ -206,29 +200,63 @@ struct MainView: View {
                         .foregroundStyle(.secondary)
                     ScrollView(.horizontal) {
                         HStack{
-                            ColorPicker(selection: $color, supportsOpacity: false, label: {})
+                            ColorPicker(selection: $lamp.newColor, supportsOpacity: false, label: {})
                                 .scaleEffect(1.6)
                                 .padding(.trailing)
+                                .frame(height: 45)
+                                
+                                
                                 
                             
                             
-                            ForEach(colors, id: \.self){
+                            ForEach(lamp.colorsList, id: \.self){
                                 color in
-                                ColorCircle(lamp: $lamp, color: color)
+                                ColorCircle(lamp: $lamp, color: color.color, temp:color.temp)
                                     .padding(.vertical)
                             }
                         }
                     }
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    
                     .scrollIndicators(.hidden)
                     
                 }
                 .padding()
                 
                 
-                LazyVGrid(columns: columns)
-                {
+                VStack(alignment: .leading, spacing: 0) {
+                    Text("Scenes")
+                        .font(.title3)
+                        .bold()
+                        .foregroundStyle(.secondary)
+                    LazyVGrid(columns: columns)
+                    {
+                        ForEach(1..<25, id:\.self){
+                            number in
+                            
+                            VStack(spacing: 0) {
+                                Text("Scene")
+                                    .font(.system(.caption, design: .rounded))
+                                    .bold()
+                                Text(String(number))
+                                    .font(.system(.title3, design: .rounded))
+                                
+                                
+                            }
+                            .padding()
+                            .background(Color(uiColor: .lightGray))
+                            
+                            .clipShape(RoundedRectangle(cornerRadius: 15, style: .circular))
+                            .onTapGesture {
+                                self.lamp.setScene(number)
+                            }
+                            
+                        }
+                    }
+                    .padding(.vertical)
                     
                 }
+                .padding()
             }
             
         }
@@ -246,6 +274,7 @@ struct ColorCircle: View{
     @Binding var lamp:LampViewModel
     let color:CGColor
     let ray = CGFloat(45)
+    let temp:Int
     
     var body: some View{
         VStack{
@@ -255,7 +284,7 @@ struct ColorCircle: View{
                 .foregroundColor(Color(color))
         }
         .onTapGesture {
-            lamp.setColor(r: Int(color.components![0]*255), g: Int(color.components![1]*255), b: Int(color.components![2]*255))
+            lamp.setWhite(temp)
         }
     }
 }
@@ -263,5 +292,5 @@ struct ColorCircle: View{
 
 
 #Preview{
-    BulbView(lamp:LampViewModel(lamp: LampModel(name: "Desk Lamp", host: "192.168.1.2")))
+    LampView(lamp:LampViewModel(lamp: LampModel(name: "Desk Lamp", host: "192.168.1.3")))
 }

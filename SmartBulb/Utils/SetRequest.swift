@@ -27,8 +27,8 @@ struct SetRequest{
     }
     
     //set white
-    init(state:Bool=false, dimming:Int=0, temp:Int ){
-        params=Params(state:state, dimming:dimming, sceneId: nil, r: nil, g: nil, b: nil, temp: temp)
+    init(temp:Int ){
+        params=Params(state:nil, dimming:nil, sceneId: nil, r: nil, g: nil, b: nil, temp: temp)
     }
     
     //set rgb
